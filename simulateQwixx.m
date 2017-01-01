@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-numGames = 10;
+numGames = 1;
 playerList = {'Tatyana', 'NimaIso2'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -21,13 +21,21 @@ for j=1:numGames
         c = clock;
         hour = c(4);
         minute = c(5);
+        seconds = c(6);
         percentLeft = 100 - round(j/numGames*100);
-        minute = minute + timeForOnePercent*percentLeft/60;
+        
+        second = seconds + timeForOnePercent*percentLeft;
+        while (second >= 60)
+            minute = minute + 1;
+            second = second - 60;
+        end
+%         minute = minute + timeForOnePercent*percentLeft/60;
         while (minute >= 60)
             hour = hour + 1;
             minute = minute - 60;
         end
-        sprintf('Will finish at %d:%d.', hour,round(minute))
+        clc
+        display(['Will finish at ', num2str(hour),':',num2str(minute),':',num2str(second)])
         tic
     end
     winner = qwixx(playerList,displayText);
