@@ -50,7 +50,7 @@ while(gameInfo.gameNotOver)
                     [gameInfo.player(playerID), crossMade] = checkDecision(playerID, gameInfo, color, number);
                     %IF ITS THE ROLLER CHECK TO SEE IF CROSSES WERE MADE
                     if (i == 1)
-                        gameInfo.newCrosses = gameInfo.newCrosses + crossMade;
+                        newCrosses = newCrosses + crossMade;
                     end
                 end
             end
@@ -64,7 +64,7 @@ while(gameInfo.gameNotOver)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %CHECK FOR MISTHROW AFTER ROLLER FINISHES ACTION 2
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    if (gameInfo.newCrosses == 0 && (i == 1))
+    if (newCrosses == 0)
         MT = sum(gameInfo.player(gameInfo.turnOrder(1)).misthrow);
         %ADD A MISTHROW
         gameInfo.player(gameInfo.turnOrder(1)).misthrow(MT+1) = 1;
