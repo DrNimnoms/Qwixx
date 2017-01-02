@@ -20,7 +20,7 @@ isItMyTurn = (gameInfo.turnOrder(1) == playerID);
 rightMostCrossLocations = getRightMostCrosses(gameInfo,playerID);
 
 %FIGURE OUT THE INDEX OF THE BEST DICE SUM FOR EACH COLOR/ROW
-colorIndexOfDiceSum = findRowIndicies (gameInfo,playerID)
+colorIndexOfDiceSum = findRowIndicies (gameInfo,playerID);
 
 %CALCULATE OUR OBJECTIVE FUNCTION FOR EACH ROW
 

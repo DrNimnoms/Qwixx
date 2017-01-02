@@ -3,13 +3,13 @@ function [ valid ] = isValidChoice( playerID, gameInfo, color, value)
 %   Detailed explanation goes here
 scorecard = gameInfo.player(playerID);
 valid = 0;
-debug = 1;
+debug = 0;
 
 % 2 gameInfo.dice can't produce values outside 2-12
 if ( value == -1)
     
     if(debug)
-        disp('Misthow!')
+        disp('Mistrhow!')
     end
     return;
     

@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-numGames = 1;
-playerList = {'Tatyana','NimaIso4','NimaIso3'};%, 'NimaIso3''Tatyana',
+numGames = 1000;
+playerList = {'Tatyana2','NimaIso4'};%, 'NimaIso3''Tatyana',
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

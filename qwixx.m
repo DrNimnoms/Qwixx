@@ -127,16 +127,14 @@ gameInfo.player = scoreGame(gameInfo);
 
 [sortedScores, sortIndicies] = sort(cell2mat({gameInfo.player.score}),'descend');
 winnerID = sortIndicies(1);
-disp(['******************************************************'])
-disp(['******************** GAME RESULTS ********************'])
-disp(['******************************************************'])
 
 if(displayText)
+    disp(['******************************************************'])
+    disp(['******************** GAME RESULTS ********************'])
+    disp(['******************************************************'])
     for i = 1:gameInfo.numPlayers
-%         str = sprintf('\n Player[%d]: %s',sortIndicies(i), cell2mat(gameInfo.playerNames(sortIndicies(i))));
         str = sprintf('\n Player[%d]: %s (%d pts)',i, cell2mat(gameInfo.playerNames(i)),gameInfo.player(i).score);
         disp(str);
-%       printScorecard(gameInfo,sortIndicies(i));
         printScorecard(gameInfo,i);
     end
 
