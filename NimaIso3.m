@@ -128,7 +128,7 @@ for colorIdx=1:4  % loop through colors
                 bestNumber = action2Num;
                 bestColor = action2Color;
             else
-                if (rollInfo.Cpos(colorIdx) ~= 0 && rollInfo.WskipProb(colorIdx) <= 3) % consider taking the number
+                if (rollInfo.Cpos(colorIdx) ~= 0 && rollInfo.CskipProb(colorIdx) <= 3) % consider taking the number
                     tempCost = rollInfo.CrightProb(colorIdx)-rollInfo.CskipProb(colorIdx);
                     if(tempCost > cost)
                         cost = tempCost;

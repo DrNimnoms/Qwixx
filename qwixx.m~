@@ -46,7 +46,7 @@ while(gameInfo.gameNotOver)
                 playerID = gameInfo.turnOrder(i);
                 %ASK FOR PLAYER DECISION FROM EVERYONE ROUND 1 OR FROM
                 %ROLLER i==1 ON ROUND 2
-                if((gameInfo.action == 1) || ((gameInfo.action == 2) && (i == 1))) 
+                if((gameInfo.action == 1) || ((gameInfo.action == 2) && (i == 1)))
                     [color, number] = playerDecision(gameInfo, playerID);
                     [gameInfo.player(playerID), crossMade] = checkDecision(playerID, gameInfo, color, number);
                     %IF ITS THE ROLLER CHECK TO SEE IF CROSSES WERE MADE
@@ -72,15 +72,17 @@ while(gameInfo.gameNotOver)
             gameInfo.closedColors = updateClosedColors(gameInfo);
         end
         
-      if(gameInfo.action == 2)  
-     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %CHECK FOR MISTHROW AFTER ROLLER FINISHES ACTION 2
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    if (newCrosses == 0 && (i == 1))
-        MT = sum(gameInfo.player(gameInfo.turnOrder(1)).misthrow);
-        %ADD A MISTHROW
-        gameInfo.player(gameInfo.turnOrder(1)).misthrow(MT+1) = 1;
-    end
+        if(gameInfo.action == 2)
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %CHECK FOR MISTHROW AFTER ROLLER FINISHES ACTION 2
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            if (newCrosses == 0 )
+                MT = sum(gameInfo.player(gameInfo.turnOrder(1)).misthrow);
+                %ADD A MISTHROW
+                gameInfo.player(gameInfo.turnOrder(1)).misthrow(MT+1) = 1;
+            end
+            
+        end
         
         
         
@@ -88,12 +90,9 @@ while(gameInfo.gameNotOver)
         gameInfo.gameNotOver = checkGameOver(gameInfo);
         
         
-        
-        
-        
     end
     
-   
+    
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %CHANGE STARTING PLAYER

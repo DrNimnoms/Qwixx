@@ -150,12 +150,15 @@ for colorIdx=1:4  % loop through colors
                     end
                 end
             end
-            % action 2
+            display('here takeAction2 = ')
+            takeAction2
+       % action 2
         else
             if (takeAction2) % pick from the colored dice
                 bestNumber = action2Num;
                 bestColor = action2Color;
             else
+                display('here')
                 for ii=1:2
                     if (rollInfo.Cpos(colorIdx,ii) ~= 0 && rollInfo.WskipProb(colorIdx) <= 3) % consider taking the number
                         tempCost = rollInfo.CrightProb(colorIdx,ii)-rollInfo.CskipProb(colorIdx,ii);

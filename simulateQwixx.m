@@ -1,11 +1,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 numGames = 1000;
-playerList = {'NimaIso4','Tatyana'};%, 'NimaIso3''Tatyana',
+playerList = {'Tatyana','NimaIso4','NimaIso3'};%, 'NimaIso3''Tatyana',
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 timeLP=0;
-alpha=.1;
+alpha=0.08;
 OnePercent = round(numGames/100);
 clc
 format compact
