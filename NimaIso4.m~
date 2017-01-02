@@ -150,23 +150,43 @@ for colorIdx=1:4  % loop through colors
                     end
                 end
             end
-            display('here takeAction2 = ')
-            takeAction2
+
        % action 2
         else
             if (takeAction2) % pick from the colored dice
                 bestNumber = action2Num;
                 bestColor = action2Color;
             else
-                display('here')
                 for ii=1:2
-                    if (rollInfo.Cpos(colorIdx,ii) ~= 0 && rollInfo.WskipProb(colorIdx) <= 3) % consider taking the number
+                    if (rollInfo.Cpos(colorIdx,ii) ~= 0 && rollInfo.CskipProb(colorIdx,ii) <= 3) % consider taking the number
                         tempCost = rollInfo.CrightProb(colorIdx,ii)-rollInfo.CskipProb(colorIdx,ii);
                         if(tempCost > cost)
                             cost = tempCost;
                             bestIdx = colorIdx;
                             bestNumber = rollInfo.colorRoll(colorIdx,ii);
                             bestColor = currentColor;
+                        elseif(tempCost == cost) ... % two similar options
+                                if(rollInfo.xNum(colorIdx) > rollInfo.xNum(bestIdx)) % pick the one with more X's
+                                bestIdx = colorIdx;
+                                bestColor = currentColor;
+                                bestNumber = rollInfo.whiteRoll;
+                                elseif(colorIdx>=3 && bestIdx<=2)% one from the first two row and the second from the last two
+                                    if(colorIdx==3)
+                                        tempidx1=4;
+                                    else
+                                        tempidx1=3;
+                                    end
+                                    if(bestIdx==2)
+                                        tempidx2=1;
+                                    else
+                                        tempidx2=2;
+                                    end
+                                    if (rollInfo.mostRightX(tempidx1) < rollInfo.mostRightX(tempidx2))
+                                        bestIdx = colorIdx;
+                                        bestColor = currentColor;
+                                        bestNumber = rollInfo.whiteRoll;
+                                    end
+                                end
                         end
                     end
                 end
@@ -193,15 +213,28 @@ for colorIdx=1:4  % loop through colors
                 bestIdx = colorIdx;
                 bestColor = currentColor;
                 bestNumber = rollInfo.whiteRoll;
-            elseif(tempCost == cost ... % two similar options
-                    && ((colorIdx==3 || colorIdx==4) && (bestIdx==1 || bestIdx==2)))% one from the first two row and the second from the last two 
-                if(rollInfo.xNum(colorIdx) > rollInfo.xNum(bestIdx))
-                    cost = tempCost;
+            elseif(tempCost == cost) ... % two similar options
+                if(rollInfo.xNum(colorIdx) > rollInfo.xNum(bestIdx)) % pick the one with more X's
                     bestIdx = colorIdx;
                     bestColor = currentColor;
                     bestNumber = rollInfo.whiteRoll;
-                end
-                    
+                elseif(colorIdx>=3 && bestIdx<=2)% one from the first two row and the second from the last two 
+                    if(colorIdx==3)
+                        tempidx1=4;
+                    else
+                        tempidx1=3;
+                    end
+                    if(bestIdx==2)
+                        tempidx2=1;
+                    else
+                        tempidx2=2;
+                    end
+                    if (rollInfo.mostRightX(tempidx1) < rollInfo.mostRightX(tempidx2))
+                        bestIdx = colorIdx;
+                        bestColor = currentColor;
+                        bestNumber = rollInfo.whiteRoll;
+                    end
+                end     
             end
         end
     end
@@ -221,6 +254,7 @@ for colorIdx=1:4  % loop through colors
     colorRow = scorecard.(color);
     rollInfo.xNum(colorIdx) = sum(colorRow);
     % set defailt values
+    rollInfo.mostRightX(colorIdx)=13;
     rollInfo.Wpos(colorIdx)=0;
     rollInfo.WskipProb(colorIdx)=-1;
     rollInfo.WrightProb(colorIdx)=-1;
@@ -242,9 +276,9 @@ for colorIdx=1:4  % loop through colors
         
         % get the position of the most right X
         if(rollInfo.xNum(colorIdx)>0)
-            indexOfLeftX = find(colorRow == 1,1,'last');
+            rollInfo.mostRightX(colorIdx) = find(colorRow == 1,1,'last');
         else
-            indexOfLeftX = 0;
+            rollInfo.mostRightX(colorIdx) = 0;
         end
         
         %%%%%%%%%%%%%% get info on the white roll %%%%%%%%%%%%%
@@ -252,9 +286,9 @@ for colorIdx=1:4  % loop through colors
         indexOfValue = find (indexMap == rollInfo.whiteRoll);
         
         % check if the white roll is valid
-        if(indexOfLeftX < indexOfValue)
+        if(rollInfo.mostRightX(colorIdx) < indexOfValue)
             rollInfo.Wpos(colorIdx) = indexOfValue;
-            rollInfo.WskipProb(colorIdx) = sum(probVec(indexOfLeftX+1:indexOfValue-1));
+            rollInfo.WskipProb(colorIdx) = sum(probVec(rollInfo.mostRightX(colorIdx)+1:indexOfValue-1));
             rollInfo.WrightProb(colorIdx) = sum(probVec(indexOfValue+1:end));
             rollInfo.Wprob(colorIdx) = probVec(indexOfValue);
         end
@@ -271,9 +305,9 @@ for colorIdx=1:4  % loop through colors
             indexOfValue=sort(indexOfValue);
             
             % check if the colored rolls are valid
-            if (indexOfLeftX >= indexOfValue(2)) % both options don't work
+            if (rollInfo.mostRightX(colorIdx) >= indexOfValue(2)) % both options don't work
                 indexOfValue=[0,0];
-            elseif (indexOfLeftX >= indexOfValue(1)) % option 2 works but one does not
+            elseif (rollInfo.mostRightX(colorIdx) >= indexOfValue(1)) % option 2 works but one does not
                 indexOfValue(1) = 0;
             elseif (indexOfValue(1) == indexOfValue(2)) % both options work but second option is the same as the first
                 indexOfValue(2) = 0;
@@ -284,7 +318,7 @@ for colorIdx=1:4  % loop through colors
                 if(indexOfValue(ii)>0)
                     rollInfo.Cpos(colorIdx,ii) = indexOfValue(ii);
                     rollInfo.colorRoll(colorIdx,ii) = indexMap(indexOfValue(ii));
-                    rollInfo.CskipProb(colorIdx,ii) = sum(probVec(indexOfLeftX+1:indexOfValue(ii)-1));
+                    rollInfo.CskipProb(colorIdx,ii) = sum(probVec(rollInfo.mostRightX(colorIdx)+1:indexOfValue(ii)-1));
                     rollInfo.CrightProb(colorIdx,ii) = sum(probVec(indexOfValue(ii)+1:end));
                     rollInfo.Cprob(colorIdx,ii) = probVec(indexOfValue(ii));
                 end
