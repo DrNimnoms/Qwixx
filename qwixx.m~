@@ -1,4 +1,4 @@
-function winnerID = qwixx(playerList,displayText)
+function [winnerID,gameInfo] = qwixx(playerList,displayText)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %INITIALIZE GAME
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -23,6 +23,7 @@ scorecard.score = 0;
 %programaticaly
 gameInfo.player(1:gameInfo.numPlayers)  = deal(scorecard);
 
+debug = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %PLAY GAME
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -50,7 +51,20 @@ while(gameInfo.gameNotOver)
                     [gameInfo.player(playerID), crossMade] = checkDecision(playerID, gameInfo, color, number);
                     %IF ITS THE ROLLER CHECK TO SEE IF CROSSES WERE MADE
                     if (i == 1)
-                        newCrosses = newCrosses + crossMade;
+                        gameInfo.newCrosses = gameInfo.newCrosses + crossMade;
+                    end
+                    if(debug)
+                        display(['//////// ', cell2mat(gameInfo.playerNames(i)), ' \\\\\\\\']);
+                        display(['w1 = ',num2str(gameInfo.dice.white(1)), ', ',...
+                            'w2 = ',num2str(gameInfo.dice.white(2))]);
+                        if (i == 1 && gameInfo.action == 2)
+                            display(['red = ',num2str(gameInfo.dice.red), ', ',...
+                                'yellow = ',num2str(gameInfo.dice.yellow), ', ',...
+                                'green = ',num2str(gameInfo.dice.green), ', ',...
+                                'blue = ',num2str(gameInfo.dice.blue)]);
+                        end
+                        scorecard = gameInfo.player(playerID)
+                        pause
                     end
                 end
             end
@@ -64,7 +78,7 @@ while(gameInfo.gameNotOver)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %CHECK FOR MISTHROW AFTER ROLLER FINISHES ACTION 2
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    if (newCrosses == 0)
+    if (gameInfo.newCrosses == 0 && (i == 1))
         MT = sum(gameInfo.player(gameInfo.turnOrder(1)).misthrow);
         %ADD A MISTHROW
         gameInfo.player(gameInfo.turnOrder(1)).misthrow(MT+1) = 1;

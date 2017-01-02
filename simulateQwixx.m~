@@ -1,11 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 numGames = 1000;
-playerList = { 'NimaIso4','NimaIso3','NimaIso2','NimaIso1'};%, 'NimaIso2''Tatyana'
+playerList = { 'NimaIso4', 'Tatyana'};%, 'NimaIso2'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-timeLP=0;
-alpha=.1;
+
 OnePercent = round(numGames/100);
 clc
 format compact
@@ -25,11 +24,9 @@ for j=1:numGames
         seconds = c(6);
         percentLeft = 100 - round(j/numGames*100);
         if (timeLP==0)
-            timeLP=timeForOnePercent*percentLeft;
-        else
-            timeLP = (1-alpha)*timeLP+alpha*timeForOnePercent*percentLeft;
-        end
-        second = seconds + timeLP;
+            timeLP
+        timeLP = .9*timeLP
+        second = seconds + timeForOnePercent*percentLeft;
         while (second >= 60)
             minute = minute + 1;
             second = second - 60;

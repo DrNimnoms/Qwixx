@@ -56,7 +56,7 @@ for colorIdx=1:4  % loop through colors
                    
                 elseif(rollInfo.Cpos(colorIdx) ~= CLOSEPOS)
                     % check if it's better to take both of them 
-                    tempCost = rollInfo.CrightProb(colorIdx) -rollInfo.CskipProb(colorIdx)+rollInfo.Wprob(colorIdx);
+                    tempCost = rollInfo.CrightProb(colorIdx) - rollInfo.CskipProb(colorIdx) + rollInfo.Wprob(colorIdx);
                     if(tempCost > cost)
                         cost = tempCost;
                         bestIdx = colorIdx;
@@ -68,8 +68,9 @@ for colorIdx=1:4  % loop through colors
                     end
                     
                 end
-           % check if just the white is valid
-            elseif(rollInfo.Wpos(colorIdx) ~= 0)
+            end
+           % check if just the white is better
+            if(rollInfo.Wpos(colorIdx) ~= 0)
                 % check if the row can be closed
                 if(rollInfo.Wpos(colorIdx) == CLOSEPOS && rollInfo.xNum(colorIdx)> X2CLOSE)
                     if(cost==MAXCOST && rollInfo.xNum(colorIdx) <= rollInfo.xNum(bestIdx)) % if more than one can be closed
@@ -92,22 +93,20 @@ for colorIdx=1:4  % loop through colors
                         takeAction2 = false;
                     end
                 end
-
             end
-            % action 2
-        else % pick from the colored dice
-            if (takeAction2)
-                bestNumber = action2Num;
-                bestColor = action2Color;
-            else
+            % check if just the colored roll is better   
+            if(rollInfo.Cpos(colorIdx) ~= 0)
                 if( rollInfo.Cpos(colorIdx)==CLOSEPOS && rollInfo.xNum(colorIdx) > X2CLOSE) % check if the row can be closed
                     if(cost==MAXCOST && rollInfo.xNum(colorIdx) <= rollInfo.xNum(bestIdx)) % if more than one can be closed
                         % do nothing
                     else
                         cost = MAXCOST;
                         bestIdx = colorIdx;
-                        bestColor = currentColor;
-                        bestNumber = rollInfo.colorRoll(colorIdx);
+                        bestColor =  'purple';
+                        bestNumber = -1;
+                        takeAction2 = true;
+                        action2Num = rollInfo.colorRoll(colorIdx);
+                        action2Color = currentColor;
                     end
                     
                 elseif (rollInfo.Cpos(colorIdx) ~= 0) % consider taking the number
@@ -115,12 +114,30 @@ for colorIdx=1:4  % loop through colors
                     if(tempCost > cost)
                         cost = tempCost;
                         bestIdx = colorIdx;
-                        bestColor = currentColor;
-                        bestNumber = rollInfo.colorRoll(colorIdx);
+                        bestColor =  'purple';
+                        bestNumber = -1;
+                        takeAction2 = true;
+                        action2Num = rollInfo.colorRoll(colorIdx);
+                        action2Color = currentColor;
                     end
                 end
             end
-            
+        % action 2
+        else
+            if (takeAction2) % pick from the colored dice
+                bestNumber = action2Num;
+                bestColor = action2Color;
+            else
+                if (rollInfo.Cpos(colorIdx) ~= 0 && rollInfo.WskipProb(colorIdx) <= 3) % consider taking the number
+                    tempCost = rollInfo.CrightProb(colorIdx)-rollInfo.CskipProb(colorIdx);
+                    if(tempCost > cost)
+                        cost = tempCost;
+                        bestIdx = colorIdx;
+                        bestNumber = rollInfo.colorRoll(colorIdx);
+                        bestColor = currentColor;
+                    end
+                end
+            end
         end
         
     else %% decide on an action when it is not your turn
@@ -134,7 +151,7 @@ for colorIdx=1:4  % loop through colors
                 bestNumber = rollInfo.whiteRoll;
             end
             
-        elseif (rollInfo.Wpos(colorIdx) ~= 0 && rollInfo.WskipProb(colorIdx) <= 4) % consider taking the number
+        elseif (rollInfo.Wpos(colorIdx) ~= 0 && rollInfo.WskipProb(colorIdx) <= 3) % consider taking the number
             tempCost = rollInfo.WrightProb(colorIdx)-rollInfo.WskipProb(colorIdx);
             if(tempCost > cost)
                 cost = tempCost;
@@ -212,7 +229,7 @@ function rollInfo= getRollInfo(gameInfo,playerID,isItMyTurn)
                 elseif (indexOfLeftX < indexOfValue1)
                     indexOfValue = indexOfValue1;
                 elseif (indexOfLeftX < indexOfValue2)
-                    indexOfValue = indexOfValue1;
+                    indexOfValue = indexOfValue2;
                 else
                     indexOfValue = 0;
                 end

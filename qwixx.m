@@ -23,6 +23,7 @@ scorecard.score = 0;
 %programaticaly
 gameInfo.player(1:gameInfo.numPlayers)  = deal(scorecard);
 
+debug = 0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %PLAY GAME
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -51,6 +52,19 @@ while(gameInfo.gameNotOver)
                     %IF ITS THE ROLLER CHECK TO SEE IF CROSSES WERE MADE
                     if (i == 1)
                         gameInfo.newCrosses = gameInfo.newCrosses + crossMade;
+                    end
+                    if(debug)
+                        display(['//////// ', cell2mat(gameInfo.playerNames(playerID)), ' \\\\\\\\']);
+                        display(['w1 = ',num2str(gameInfo.dice.white(1)), ', ',...
+                            'w2 = ',num2str(gameInfo.dice.white(2))]);
+                        if (i == 1 && gameInfo.action == 2)
+                            display(['red = ',num2str(gameInfo.dice.red), ', ',...
+                                'yellow = ',num2str(gameInfo.dice.yellow), ', ',...
+                                'green = ',num2str(gameInfo.dice.green), ', ',...
+                                'blue = ',num2str(gameInfo.dice.blue)]);
+                        end
+                        scorecard = gameInfo.player(playerID)
+                        pause
                     end
                 end
             end
