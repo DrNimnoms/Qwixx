@@ -5,6 +5,7 @@ player = gameInfo.player;
 
 
 for i = 1:gameInfo.numPlayers
+    player(i).score = 0;
     player(i).score = player(i).score + crossesToPoints(sum(player(i).red));
     player(i).score = player(i).score + crossesToPoints(sum(player(i).yellow));
     player(i).score = player(i).score + crossesToPoints(sum(player(i).green));

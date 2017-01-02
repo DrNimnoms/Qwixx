@@ -10,7 +10,10 @@ gameInfo.gameNotOver = 1;
 gameInfo.action = 1;
 gameInfo.dice = rollDice();
 gameInfo.colorOptions = {'red', 'yellow', 'green', 'blue'};
-
+gameInfo.list.red = 2:12;
+gameInfo.list.yellow = 2:12;
+gameInfo.list.green = 12:-1:2;
+gameInfo.list.blue = 12:-1:2;
 
 scorecard.red = zeros(1,12);
 scorecard.yellow = zeros(1,12);
@@ -63,7 +66,7 @@ while(gameInfo.gameNotOver)
                                 'green = ',num2str(gameInfo.dice.green), ', ',...
                                 'blue = ',num2str(gameInfo.dice.blue)]);
                         end
-                        scorecard = gameInfo.player(playerID)
+                        printScorecard(gameInfo,playerID);
                         pause
                     end
                 end
@@ -84,8 +87,7 @@ while(gameInfo.gameNotOver)
             
         end
         
-        
-        
+        gameInfo.player = scoreGame(gameInfo);
         %CHECK IF THE GAME IS OVER AT THE END OF EACH ACTION PHASE
         gameInfo.gameNotOver = checkGameOver(gameInfo);
         
@@ -111,10 +113,10 @@ winnerID = sortIndicies(1);
 if(displayText)
     for i = 1:gameInfo.numPlayers
 %         str = sprintf('\n Player[%d]: %s',sortIndicies(i), cell2mat(gameInfo.playerNames(sortIndicies(i))));
-        str = sprintf('\n Player[%d]: %s',i, cell2mat(gameInfo.playerNames(i)));
+        str = sprintf('\n Player[%d]: %s (%d pts)',i, cell2mat(gameInfo.playerNames(i)),gameInfo.player(i).score);
         disp(str);
-%         Scorecard = gameInfo.player(sortIndicies(i))
-        Scorecard = gameInfo.player(i)
+%       printScorecard(gameInfo,sortIndicies(i));
+        printScorecard(gameInfo,i);
     end
 
     if(winnerID <= gameInfo.numPlayers)
