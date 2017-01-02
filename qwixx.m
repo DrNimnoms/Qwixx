@@ -34,7 +34,6 @@ scorecard.rightMostIndex.blue = 0;
 %programaticaly
 gameInfo.player(1:gameInfo.numPlayers)  = deal(scorecard);
 
-debug = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %PLAY GAME
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -53,7 +52,7 @@ while(gameInfo.gameNotOver)
         gameInfo.action = kk;
         %CHECK IF GAME IS OVER BEFORE EACH ACTION
         if(gameInfo.gameNotOver)
-            if (debug)
+            if (displayText)
                 disp(['******************************************************'])
                 display(['Round(',num2str(gameInfo.round),') / Action (',num2str(gameInfo.action),')'])
                 disp(['******************************************************'])
@@ -86,7 +85,7 @@ while(gameInfo.gameNotOver)
                         end
                     end
                     
-                    if(debug)
+                    if(displayText)
                         display(['//////// ', cell2mat(gameInfo.playerNames(playerID)),'(',num2str(gameInfo.player(playerID).score),' pts)',': Choice( ', color, ' ', num2str(number), ')\\\\\\\\']);
                         display(['w1 = ',num2str(gameInfo.dice.white(1)), ', ',...
                             'w2 = ',num2str(gameInfo.dice.white(2))]);
@@ -97,7 +96,6 @@ while(gameInfo.gameNotOver)
                                 'blue = ',num2str(gameInfo.dice.blue)]);
                         end
                         printScorecard(gameInfo,playerID);
-                        %pause
                     end
                 end
             end
