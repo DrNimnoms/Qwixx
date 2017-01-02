@@ -35,91 +35,117 @@ for colorIdx=1:4  % loop through colors
             takeAction2 = false;
             action2Num = -1;
             action2Color = 'purple';
-            % check if both the colored and the white roll can be taken in the
-            % same row
-            for ii=1:2
-                if(rollInfo.Wpos(colorIdx) ~= 0 ...
-                        && rollInfo.Wpos(colorIdx) < rollInfo.Cpos(colorIdx,ii) )
-                    % check if the row can be closed
-                    if(rollInfo.Cpos(colorIdx,ii) == CLOSEPOS && rollInfo.xNum(colorIdx)> X2CLOSE-1)
-                        % then take both rolls in this row
-                        if(cost==MAXCOST && rollInfo.xNum(colorIdx) <= rollInfo.xNum(bestIdx)) % if more than one can be closed
-                            % do nothing
-                        else
-                            cost=MAXCOST;
-                            bestIdx = colorIdx;
-                            bestColor = currentColor;
-                            bestNumber = rollInfo.whiteRoll;
-                            takeAction2 = true;
-                            action2Num = rollInfo.colorRoll(colorIdx,ii);
-                            action2Color = currentColor;
-                        end
-                        
-                    elseif(rollInfo.Cpos(colorIdx,ii) ~= CLOSEPOS)
-                        % check if it's better to take both of them
-                        tempCost = rollInfo.CrightProb(colorIdx,ii) - rollInfo.CskipProb(colorIdx,ii) + rollInfo.Wprob(colorIdx);
-                        if(tempCost > cost)
-                            cost = tempCost;
-                            bestIdx = colorIdx;
-                            bestColor = currentColor;
-                            bestNumber = rollInfo.whiteRoll;
-                            takeAction2 = true;
-                            action2Num = rollInfo.colorRoll(colorIdx,ii);
-                            action2Color = currentColor;
-                        end
-                        
-                    end
+            action1taken =false;
+            if( rollInfo.Wpos(colorIdx)==CLOSEPOS && rollInfo.xNum(colorIdx) > X2CLOSE...
+                    && max(rollInfo.Cpos(colorIdx,:)) ~= CLOSEPOS) % check if the row can be closed by the white roll
+                if(cost==MAXCOST && rollInfo.xNum(colorIdx) <= rollInfo.xNum(bestIdx)) % if more than one can be closed
+                    % do nothing
+                else
+                    cost = MAXCOST;
+                    action1taken = true;
+                    bestIdx = colorIdx;
+                    bestColor = currentColor;
+                    bestNumber = rollInfo.whiteRoll;
                 end
-                % check if just the white is better
-                if(rollInfo.Wpos(colorIdx) ~= 0)
-                    % check if the row can be closed
-                    if(rollInfo.Wpos(colorIdx) == CLOSEPOS && rollInfo.xNum(colorIdx)> X2CLOSE)
-                        if(cost==MAXCOST && rollInfo.xNum(colorIdx) <= rollInfo.xNum(bestIdx)) % if more than one can be closed
-                            % do nothing
-                        else
-                            cost = MAXCOST;
-                            bestIdx = colorIdx;
-                            bestColor = currentColor;
-                            bestNumber = rollInfo.whiteRoll;
-                            takeAction2 = false;
-                        end
-                    else
-                        % check if just the white roll is good
-                        tempCost = rollInfo.WrightProb(colorIdx)-rollInfo.WskipProb(colorIdx);
-                        if(tempCost > cost)
-                            cost = tempCost;
-                            bestIdx = colorIdx;
-                            bestColor = currentColor;
-                            bestNumber = rollInfo.whiteRoll;
-                            takeAction2 = false;
+                
+            elseif (rollInfo.Wpos(colorIdx) ~= 0 && rollInfo.WskipProb(colorIdx) <= 3) % consider taking the number
+                tempCost = rollInfo.WrightProb(colorIdx)-rollInfo.WskipProb(colorIdx);
+                if(tempCost > cost)
+                    cost = tempCost;
+                    action1taken = true;
+                    bestIdx = colorIdx;
+                    bestColor = currentColor;
+                    bestNumber = rollInfo.whiteRoll;
+                end
+            end
+            
+            if(~action1taken)
+                % check if both the colored and the white roll can be taken in the
+                % same row
+                for ii=1:2
+                    if(rollInfo.Wpos(colorIdx) ~= 0 ...
+                            && rollInfo.Wpos(colorIdx) < rollInfo.Cpos(colorIdx,ii) )
+                        % check if the row can be closed
+                        if(rollInfo.Cpos(colorIdx,ii) == CLOSEPOS && rollInfo.xNum(colorIdx)> X2CLOSE-1)
+                            % then take both rolls in this row
+                            if(cost==MAXCOST && rollInfo.xNum(colorIdx) <= rollInfo.xNum(bestIdx)) % if more than one can be closed
+                                % do nothing
+                            else
+                                cost=MAXCOST;
+                                bestIdx = colorIdx;
+                                bestColor = currentColor;
+                                bestNumber = rollInfo.whiteRoll;
+                                takeAction2 = true;
+                                action2Num = rollInfo.colorRoll(colorIdx,ii);
+                                action2Color = currentColor;
+                            end
+                            
+                        elseif(rollInfo.Cpos(colorIdx,ii) ~= CLOSEPOS)
+                            % check if it's better to take both of them
+                            tempCost = rollInfo.CrightProb(colorIdx,ii) - rollInfo.CskipProb(colorIdx,ii) + rollInfo.Wprob(colorIdx);
+                            if(tempCost > cost)
+                                cost = tempCost;
+                                bestIdx = colorIdx;
+                                bestColor = currentColor;
+                                bestNumber = rollInfo.whiteRoll;
+                                takeAction2 = true;
+                                action2Num = rollInfo.colorRoll(colorIdx,ii);
+                                action2Color = currentColor;
+                            end
+                            
                         end
                     end
-                end
-                % check if just the colored roll is better
-                if(rollInfo.Cpos(colorIdx,ii) ~= 0)
-                    if( rollInfo.Cpos(colorIdx,ii)==CLOSEPOS && rollInfo.xNum(colorIdx) > X2CLOSE) % check if the row can be closed
-                        if(cost==MAXCOST && rollInfo.xNum(colorIdx) <= rollInfo.xNum(bestIdx)) % if more than one can be closed
-                            % do nothing
+                    % check if just the white is better
+                    if(rollInfo.Wpos(colorIdx) ~= 0)
+                        % check if the row can be closed
+                        if(rollInfo.Wpos(colorIdx) == CLOSEPOS && rollInfo.xNum(colorIdx)> X2CLOSE)
+                            if(cost==MAXCOST && rollInfo.xNum(colorIdx) <= rollInfo.xNum(bestIdx)) % if more than one can be closed
+                                % do nothing
+                            else
+                                cost = MAXCOST;
+                                bestIdx = colorIdx;
+                                bestColor = currentColor;
+                                bestNumber = rollInfo.whiteRoll;
+                                takeAction2 = false;
+                            end
                         else
-                            cost = MAXCOST;
-                            bestIdx = colorIdx;
-                            bestColor =  'purple';
-                            bestNumber = -1;
-                            takeAction2 = true;
-                            action2Num = rollInfo.colorRoll(colorIdx,ii);
-                            action2Color = currentColor;
+                            % check if just the white roll is good
+                            tempCost = rollInfo.WrightProb(colorIdx)-rollInfo.WskipProb(colorIdx);
+                            if(tempCost > cost)
+                                cost = tempCost;
+                                bestIdx = colorIdx;
+                                bestColor = currentColor;
+                                bestNumber = rollInfo.whiteRoll;
+                                takeAction2 = false;
+                            end
                         end
-                        
-                    elseif (rollInfo.Cpos(colorIdx,ii) ~= 0) % consider taking the number
-                        tempCost = rollInfo.CrightProb(colorIdx,ii)-rollInfo.CskipProb(colorIdx,ii);
-                        if(tempCost > cost)
-                            cost = tempCost;
-                            bestIdx = colorIdx;
-                            bestColor =  'purple';
-                            bestNumber = -1;
-                            takeAction2 = true;
-                            action2Num = rollInfo.colorRoll(colorIdx,ii);
-                            action2Color = currentColor;
+                    end
+                    % check if just the colored roll is better
+                    if(rollInfo.Cpos(colorIdx,ii) ~= 0)
+                        if( rollInfo.Cpos(colorIdx,ii)==CLOSEPOS && rollInfo.xNum(colorIdx) > X2CLOSE) % check if the row can be closed
+                            if(cost==MAXCOST && rollInfo.xNum(colorIdx) <= rollInfo.xNum(bestIdx)) % if more than one can be closed
+                                % do nothing
+                            else
+                                cost = MAXCOST;
+                                bestIdx = colorIdx;
+                                bestColor =  'purple';
+                                bestNumber = -1;
+                                takeAction2 = true;
+                                action2Num = rollInfo.colorRoll(colorIdx,ii);
+                                action2Color = currentColor;
+                            end
+                            
+                        elseif (rollInfo.Cpos(colorIdx,ii) ~= 0) % consider taking the number
+                            tempCost = rollInfo.CrightProb(colorIdx,ii)-rollInfo.CskipProb(colorIdx,ii);
+                            if(tempCost > cost)
+                                cost = tempCost;
+                                bestIdx = colorIdx;
+                                bestColor =  'purple';
+                                bestNumber = -1;
+                                takeAction2 = true;
+                                action2Num = rollInfo.colorRoll(colorIdx,ii);
+                                action2Color = currentColor;
+                            end
                         end
                     end
                 end
@@ -127,8 +153,23 @@ for colorIdx=1:4  % loop through colors
             % action 2
         else
             if (takeAction2) % pick from the colored dice
-            bestNumber = action2Num;
-            bestColor = action2Color;
+                bestNumber = action2Num;
+                bestColor = action2Color;
+            else
+                for ii=1:2
+                    if (rollInfo.Cpos(colorIdx,ii) ~= 0 && rollInfo.WskipProb(colorIdx) <= 3) % consider taking the number
+                        tempCost = rollInfo.CrightProb(colorIdx,ii)-rollInfo.CskipProb(colorIdx,ii);
+                        if(tempCost > cost)
+                            cost = tempCost;
+                            bestIdx = colorIdx;
+                            bestNumber = rollInfo.colorRoll(colorIdx,ii);
+                            bestColor = currentColor;
+                        end
+                    end
+                end
+                
+            end
+            
         end
         
     else %% decide on an action when it is not your turn
@@ -149,6 +190,15 @@ for colorIdx=1:4  % loop through colors
                 bestIdx = colorIdx;
                 bestColor = currentColor;
                 bestNumber = rollInfo.whiteRoll;
+            elseif(tempCost == cost ... % two similar options
+                    && ((colorIdx==3 || colorIdx==4) && (bestIdx==1 || bestIdx==2)))% one from the first two row and the second from the last two 
+                if(rollInfo.xNum(colorIdx) > rollInfo.xNum(bestIdx))
+                    cost = tempCost;
+                    bestIdx = colorIdx;
+                    bestColor = currentColor;
+                    bestNumber = rollInfo.whiteRoll;
+                end
+                    
             end
         end
     end
@@ -236,7 +286,7 @@ for colorIdx=1:4  % loop through colors
                     rollInfo.Cprob(colorIdx,ii) = probVec(indexOfValue(ii));
                 end
             end
-        end  
+        end
     end
 end
 end

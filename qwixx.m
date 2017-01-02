@@ -33,7 +33,7 @@ while(gameInfo.gameNotOver)
     %NEW ROLLER
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     gameInfo.dice = rollDice();
-    gameInfo.newCrosses = 0;
+    newCrosses = 0;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %ACTIONS 1 THEN 2  
@@ -46,12 +46,12 @@ while(gameInfo.gameNotOver)
                 playerID = gameInfo.turnOrder(i);
                 %ASK FOR PLAYER DECISION FROM EVERYONE ROUND 1 OR FROM
                 %ROLLER i==1 ON ROUND 2
-                if((gameInfo.action == 1) || ((gameInfo.action == 2) && (i == 1))) 
+                if((gameInfo.action == 1) || ((gameInfo.action == 2) && (i == 1)))
                     [color, number] = playerDecision(gameInfo, playerID);
                     [gameInfo.player(playerID), crossMade] = checkDecision(playerID, gameInfo, color, number);
                     %IF ITS THE ROLLER CHECK TO SEE IF CROSSES WERE MADE
                     if (i == 1)
-                        gameInfo.newCrosses = gameInfo.newCrosses + crossMade;
+                        newCrosses = newCrosses + crossMade;
                     end
                     if(debug)
                         display(['//////// ', cell2mat(gameInfo.playerNames(playerID)), ' \\\\\\\\']);
@@ -71,18 +71,28 @@ while(gameInfo.gameNotOver)
             %AFTER DECISIONS ARE MADE CHECK TO SEE IF ROWS ARE CLOSED
             gameInfo.closedColors = updateClosedColors(gameInfo);
         end
+        
+        if(gameInfo.action == 2)
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %CHECK FOR MISTHROW AFTER ROLLER FINISHES ACTION 2
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            if (newCrosses == 0 )
+                MT = sum(gameInfo.player(gameInfo.turnOrder(1)).misthrow);
+                %ADD A MISTHROW
+                gameInfo.player(gameInfo.turnOrder(1)).misthrow(MT+1) = 1;
+            end
+            
+        end
+        
+        
+        
         %CHECK IF THE GAME IS OVER AT THE END OF EACH ACTION PHASE
         gameInfo.gameNotOver = checkGameOver(gameInfo);
+        
+        
     end
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %CHECK FOR MISTHROW AFTER ROLLER FINISHES ACTION 2
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    if (gameInfo.newCrosses == 0 && (i == 1))
-        MT = sum(gameInfo.player(gameInfo.turnOrder(1)).misthrow);
-        %ADD A MISTHROW
-        gameInfo.player(gameInfo.turnOrder(1)).misthrow(MT+1) = 1;
-    end
+    
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %CHANGE STARTING PLAYER
@@ -100,9 +110,11 @@ winnerID = sortIndicies(1);
 
 if(displayText)
     for i = 1:gameInfo.numPlayers
-        str = sprintf('\n Player[%d]: %s',sortIndicies(i), cell2mat(gameInfo.playerNames(sortIndicies(i))));
+%         str = sprintf('\n Player[%d]: %s',sortIndicies(i), cell2mat(gameInfo.playerNames(sortIndicies(i))));
+        str = sprintf('\n Player[%d]: %s',i, cell2mat(gameInfo.playerNames(i)));
         disp(str);
-        Scorecard = gameInfo.player(sortIndicies(i))
+%         Scorecard = gameInfo.player(sortIndicies(i))
+        Scorecard = gameInfo.player(i)
     end
 
     if(winnerID <= gameInfo.numPlayers)

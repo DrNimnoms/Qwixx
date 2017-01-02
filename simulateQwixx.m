@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 numGames = 1000;
-playerList = { 'NimaIso4','NimaIso3','NimaIso2','NimaIso1'};%, 'NimaIso2''Tatyana'
+playerList = {'NimaIso4','Tatyana'};%, 'NimaIso3''Tatyana',
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -40,7 +40,7 @@ for j=1:numGames
             minute = minute - 60;
         end
         clc
-        display(['Will finish at ', num2str(hour),':',num2str(minute),':',num2str(second)])
+        display(['Will finish at ', num2str(hour),':',num2str(minute),':',num2str(round(second))])
         tic
     end
     [winner,gameInfo] = qwixx(playerList,displayText);
