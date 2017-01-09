@@ -165,28 +165,28 @@ for colorIdx=1:4  % loop through colors
                             bestIdx = colorIdx;
                             bestNumber = rollInfo.colorRoll(colorIdx,ii);
                             bestColor = currentColor;
-                        elseif(tempCost == cost) ... % two similar options
-                                if(rollInfo.xNum(colorIdx) > rollInfo.xNum(bestIdx)) % pick the one with more X's
+                        elseif(tempCost == cost && bestIdx > 0) % two similar options
+                            if(rollInfo.xNum(colorIdx) > rollInfo.xNum(bestIdx)) % pick the one with more X's
                                 bestIdx = colorIdx;
                                 bestColor = currentColor;
-                                bestNumber = rollInfo.whiteRoll;
-                                elseif(colorIdx>=3 && bestIdx<=2)% one from the first two row and the second from the last two
-                                    if(colorIdx==3)
-                                        tempidx1=4;
-                                    else
-                                        tempidx1=3;
-                                    end
-                                    if(bestIdx==2)
-                                        tempidx2=1;
-                                    else
-                                        tempidx2=2;
-                                    end
-                                    if (rollInfo.mostRightX(tempidx1) < rollInfo.mostRightX(tempidx2))
-                                        bestIdx = colorIdx;
-                                        bestColor = currentColor;
-                                        bestNumber = rollInfo.whiteRoll;
-                                    end
+                                bestNumber = rollInfo.colorRoll(colorIdx,ii);
+                            elseif(colorIdx>=3 && bestIdx<=2)% one from the first two row and the second from the last two
+                                if(colorIdx==3)
+                                    tempidx1=4;
+                                else
+                                    tempidx1=3;
                                 end
+                                if(bestIdx==2)
+                                    tempidx2=1;
+                                else
+                                    tempidx2=2;
+                                end
+                                if (rollInfo.mostRightX(tempidx1) < rollInfo.mostRightX(tempidx2)) % pick the one that leaves the most room
+                                    bestIdx = colorIdx;
+                                    bestColor = currentColor;
+                                    bestNumber = rollInfo.colorRoll(colorIdx,ii);
+                                end
+                            end
                         end
                     end
                 end
@@ -213,7 +213,7 @@ for colorIdx=1:4  % loop through colors
                 bestIdx = colorIdx;
                 bestColor = currentColor;
                 bestNumber = rollInfo.whiteRoll;
-            elseif(tempCost == cost) ... % two similar options
+            elseif(tempCost == cost && bestIdx > 0) % two similar options
                 if(rollInfo.xNum(colorIdx) > rollInfo.xNum(bestIdx)) % pick the one with more X's
                     bestIdx = colorIdx;
                     bestColor = currentColor;

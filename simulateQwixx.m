@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-numGames = 1000;
-playerList = {'Tatyana2','NimaIso4'};%, 'NimaIso3''Tatyana',
+numGames = 100;
+playerList = {'NimaIso4','Tatyana2','Tatyana','NimaIso3'};%, 'NimaIso3''Tatyana',
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -15,6 +15,10 @@ else
     displayText = false;
 end
 numWins = zeros(1,size(playerList,2));
+h = waitbar(0,'1','Name','Estimating finish time...',...
+            'CreateCancelBtn',...
+            'setappdata(gcbf,''canceling'',1)');
+setappdata(h,'canceling',0)
 tic;
 for j=1:numGames
     if (mod(j,OnePercent) == 0)
@@ -40,13 +44,14 @@ for j=1:numGames
             minute = minute - 60;
         end
         clc
-        display(['Will finish at ', num2str(hour),':',num2str(minute),':',num2str(round(second))])
+        str=(['Will finish at ', num2str(hour),':',num2str(minute),':',num2str(round(second))]);
+        waitbar(j/numGames,h,str)
         tic
     end
     [winner,gameInfo] = qwixx(playerList,displayText);
     numWins(winner) = numWins(winner) + 1;
 end
-
+delete(h)       % DELETE the waitbar; don't try to CLOSE it.
 %3 player 
 %3680        3279        3041
 %3687        3219        3094
