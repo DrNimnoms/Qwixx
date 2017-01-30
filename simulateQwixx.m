@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-numGames = 100;
-playerList = {'NimaIso4','Tatyana2','Tatyana','NimaIso3'};%, 'NimaIso3''Tatyana',
+numGames = 1000;
+playerList = {'nimaOptimus1','Tatyana2','NimaIso4'};%, 'NimaIso3''Tatyana',
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -13,12 +13,13 @@ if (numGames == 1)
     displayText = true;
 else
     displayText = false;
+    h = waitbar(0,'1','Name','Estimating finish time...',...
+        'CreateCancelBtn',...
+        'setappdata(gcbf,''canceling'',1)');
+    setappdata(h,'canceling',0)
 end
 numWins = zeros(1,size(playerList,2));
-h = waitbar(0,'1','Name','Estimating finish time...',...
-            'CreateCancelBtn',...
-            'setappdata(gcbf,''canceling'',1)');
-setappdata(h,'canceling',0)
+
 tic;
 for j=1:numGames
     if (mod(j,OnePercent) == 0)
@@ -43,28 +44,23 @@ for j=1:numGames
             hour = hour + 1;
             minute = minute - 60;
         end
-        clc
-        str=(['Will finish at ', num2str(hour),':',num2str(minute),':',num2str(round(second))]);
-        waitbar(j/numGames,h,str)
+        if(~displayText)
+            clc
+            str=(['Will finish at ', num2str(hour),':',num2str(minute),':',num2str(round(second))]);
+            waitbar(j/numGames,h,str)
+        end
         tic
     end
     [winner,gameInfo] = qwixx(playerList,displayText);
     numWins(winner) = numWins(winner) + 1;
 end
-delete(h)       % DELETE the waitbar; don't try to CLOSE it.
-%3 player 
-%3680        3279        3041
-%3687        3219        3094
+      
 
-%2 Player
-%5180        4820
-%
-%4 player
-%1475        1313        1179        1033
 if(~displayText)
+    delete(h) % DELETE the waitbar; don't try to CLOSE it.
     figure
     pie(numWins)
     legend(playerList)
     title([num2str(numGames),' Games Played']);
+    numWins
 end
-numWins
